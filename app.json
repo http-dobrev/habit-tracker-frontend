@@ -1,12 +1,20 @@
 {
   "expo": {
+<<<<<<< HEAD
     "scheme": "habittracker",
+=======
+>>>>>>> d8af99f4c7b83ae06c3b1adfa000cc21df9bd02c
     "name": "habit-tracker-frontend",
     "slug": "habit-tracker-frontend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+<<<<<<< HEAD
     "userInterfaceStyle": "light", 
+=======
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+>>>>>>> d8af99f4c7b83ae06c3b1adfa000cc21df9bd02c
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -19,6 +27,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+<<<<<<< HEAD
       }
     },
     "web": {
@@ -27,5 +36,13 @@
     "plugins": [
       "expo-router"
     ]
+=======
+      },
+      "edgeToEdgeEnabled": true
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+>>>>>>> d8af99f4c7b83ae06c3b1adfa000cc21df9bd02c
   }
 }
