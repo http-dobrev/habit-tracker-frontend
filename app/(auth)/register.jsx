@@ -1,9 +1,9 @@
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native'
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, Alert} from 'react-native'
 import { Link } from 'expo-router'
 import { Colors } from '../../constants/Colors'
 import { useState } from 'react'
 import { useUser } from '../../hooks/useUser'
-
+import { isValidEmail, isValidPassword, isValidName } from '../../lib/authValidator'
 
 //themed components
 import ThemedView from '../../components/ThemedView'
@@ -22,12 +22,24 @@ const Register = () => {
 
   const handleSubmit =  async () => {
     setError(null);
+    if (!isValidName(name)) {
+      Alert.alert('Invalid name', 'Please enter a name.')
+      return
+    }
+    if (!isValidEmail(email)) {
+      Alert.alert('Invalid email', 'Please enter a valid email address.')
+      return
+    }
+
+    if (!isValidPassword(password)) {
+      Alert.alert('Invalid password', 'Password must be at least 8 characters.')
+      return
+    }
+
     try {
       await register(name, email, password);
-      console.log("User registered successfully");
     } catch (error) {
-      setError(error.message);
-      console.error("Error registering user:", error);
+      Alert.alert('Registration failed', error.message);
     }
   }
   return (

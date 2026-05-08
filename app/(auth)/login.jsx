@@ -1,8 +1,9 @@
-import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback} from 'react-native'
+import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, Alert} from 'react-native'
 import { Link } from 'expo-router'
 import { Colors } from '../../constants/Colors'
 import { useState } from 'react'
 import { useUser } from '../../hooks/useUser'
+import { isValidEmail, isValidPassword } from '../../lib/authValidator'
 
 //themed components
 import ThemedView from '../../components/ThemedView'
@@ -15,18 +16,26 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
-
+          
   const { login } = useUser()
-
+  
   const handleSubmit = async () => {
     setError(null); 
+    if (!isValidEmail(email)) {
+      Alert.alert('Invalid email', 'Please enter a valid email address.')
+      return
+    }
+
+    if (!isValidPassword(password)) {
+      Alert.alert('Invalid password', 'Password must be at least 8 characters.')
+      return
+    }
+
     try {
       await login(email, password);
-      console.log("User logged in successfully");
     } catch (error) {
-      setError(error.message); 
-      console.error("Error logging in user:", error);
-    }
+      Alert.alert('Login failed', 'Invalid email or password. Please try again.');
+     }
   }
 
   return (
@@ -65,7 +74,7 @@ const Login = () => {
         <Spacer height={100} />
         <Link href="/register" style={styles.link}>
           <ThemedText style={{ textAlign: 'center'}}>
-              Create an account
+              Dont have an account? Create one here
           </ThemedText>
         </Link>
 

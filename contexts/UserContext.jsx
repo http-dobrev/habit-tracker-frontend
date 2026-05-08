@@ -13,6 +13,10 @@ export function UserProvider({ children }) {
         try {
             const response = await apiLogin(email, password);
 
+            if (!response || !response.token) {
+                throw new Error("Invalid email or password");
+            }
+
             await AsyncStorage.setItem("token", response.token);
 
             const currentUser = await getCurrentUser(response.token);
@@ -32,6 +36,10 @@ export function UserProvider({ children }) {
             try {
                 const response = await apiRegister(name, email, password);
 
+                if (!response || !response.token) {
+                    throw new Error("Invalid email or password");
+                }
+                
                 await AsyncStorage.setItem("token", response.token);
 
                 const currentUser = await getCurrentUser(response.token);
@@ -43,7 +51,7 @@ export function UserProvider({ children }) {
 
                 return response;
             } catch (error) {
-                throw Error(error.message);
+                throw new Error(error.message);
             }
         }
 
