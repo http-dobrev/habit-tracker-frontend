@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
   btn: {
     backgroundColor: Colors.primary,
     padding: 18,
-    borderRadius: 6,
+    borderRadius: 10,
     marginVertical: 10
   },
   pressed: {

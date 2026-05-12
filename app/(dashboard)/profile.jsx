@@ -21,7 +21,7 @@ const Profile = () => {
       <Spacer />
 
       <Themedbutton onPress={logout}>  
-        <Text style={{ color: "f2f2f2" }}>Logout</Text>
+        <Text style={styles.buttonText}>Logout</Text>
       </Themedbutton>
 
     </ThemedView>
@@ -37,9 +37,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   heading: {
-    color: "#333",
     fontWeight: "bold",
     fontSize: 18,
     textAlign: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontWeight: "bold",
   },
 })

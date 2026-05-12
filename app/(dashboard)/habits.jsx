@@ -1,25 +1,49 @@
 import { StyleSheet, FlatList, View } from 'react-native'
 import { useEffect } from 'react'
 import { useHabits } from "../../hooks/useHabits";
+import { useRouter } from "expo-router"
 
 import Spacer from "../../components/Spacer"
 import ThemedText from "../../components/ThemedText"
 import ThemedView from "../../components/ThemedView"
 import ThemedLoader from "../../components/ThemedLoader";
+import ThemedHabitCard from "../../components/ThemedHabitCard"
+import ThemedButton from "../../components/ThemedButton"
 
 const Habits = () => {
-  const { habits, isLoadingHabits, loadHabits } = useHabits();
+  const { habits, isLoadingHabits, loadHabits, deleteHabit } = useHabits();
+  const router = useRouter()
 
   useEffect(() => {
     loadHabits();
   }, []);
 
+  const handleAdd = () => {
+    console.log("Add new habit")
+    // later:
+    // router.push("/add")
+  }
+
+  const handleEdit = (habit) => {
+    console.log("Edit habit:", habit)
+    // later:
+    // router.push(`/edit/${habit.id}`)
+  }
+
+  const handleDelete = async (habit) => {
+  try {
+    await deleteHabit(habit.id)
+  } catch (error) {
+    console.log("Delete habit error:", error.message)
+  }
+}
+  
   return (
-    <ThemedView style={styles.container} safe={true}>
+    <ThemedView style={styles.container}>
 
       <Spacer />
       <ThemedText title={true} style={styles.heading}>
-        Your Habits List
+        Manage Habits
       </ThemedText>
 
       <Spacer />
@@ -34,12 +58,23 @@ const Habits = () => {
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (
-            <View style={styles.habitCard}>
-              <ThemedText style={styles.habitName}>{item.name}</ThemedText>
-              <ThemedText style={styles.habitType}>{item.type}</ThemedText>
-            </View>
+            <ThemedHabitCard
+              habit={item}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           )}
         />
+      )}
+      {!isLoadingHabits && (
+        <ThemedButton
+          style={styles.addButton}
+          onPress={() => router.push("/create")}
+        >
+          <ThemedText style={styles.addButtonText}>
+            + Add Habit
+          </ThemedText>
+        </ThemedButton>
       )}
     </ThemedView>
   )
@@ -52,10 +87,32 @@ const styles = StyleSheet.create({
     flex: 1,
     //justifyContent: "center",
     alignItems: "stretch",
+    paddingTop: 52,
   },
   heading: {
     fontWeight: "bold",
     fontSize: 18,
     textAlign: "center",
+  },
+  list: {
+    paddingHorizontal: 16,
+    paddingBottom: 180,
+  },
+  centerText: {
+    textAlign: "center",
+    marginTop: 20,
+  },
+  addButton: {
+    position: "absolute",
+    left: 32,
+    right: 32,
+    bottom: 15,
+    alignItems: "center",
+  },
+
+  addButtonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 16,
   },
 })

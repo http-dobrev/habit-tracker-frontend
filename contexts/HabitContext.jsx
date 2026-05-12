@@ -1,5 +1,5 @@
 import { createContext, useState } from "react";
-import { getHabits as apiGetHabits } from "../lib/api";
+import { getHabits as apiGetHabits, deleteHabit as apiDeleteHabit } from "../lib/api";
 import { useUser } from "../hooks/useUser";
 
 export const HabitContext = createContext(null);
@@ -32,8 +32,20 @@ export function HabitProvider({ children }) {
         }
     }
 
+    async function deleteHabit(id) {
+        try {
+            await apiDeleteHabit(id, user.token)
+
+            setHabits((currentHabits) =>
+            currentHabits.filter((habit) => habit.id !== id)
+            )
+        } catch (error) {
+            throw new Error(error.message)
+        }
+    }
+
     return (
-        <HabitContext.Provider value={{ habits, isLoadingHabits, loadHabits }}>
+        <HabitContext.Provider value={{ habits, isLoadingHabits, loadHabits, deleteHabit }}>
             {children}
         </HabitContext.Provider>
     );
