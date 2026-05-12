@@ -8,7 +8,6 @@ import Themedbutton from "../../components/ThemedButton"
 
 const Profile = () => {
   const { logout, user } = useUser()
-  console.log("PROFILE USER:", user);
   return (
     <ThemedView style={styles.container}>
 

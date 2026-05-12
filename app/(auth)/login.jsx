@@ -16,6 +16,7 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
           
   const { login } = useUser()
   
@@ -30,12 +31,15 @@ const Login = () => {
       Alert.alert('Invalid password', 'Password must be at least 8 characters.')
       return
     }
-
+    
     try {
+      setIsLoading(true);
       await login(email, password);
     } catch (error) {
       Alert.alert('Login failed', 'Invalid email or password. Please try again.');
-     }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -62,9 +66,9 @@ const Login = () => {
           secureTextEntry={true} 
         />
 
-        <ThemedButton onPress={handleSubmit}>
+        <ThemedButton onPress={handleSubmit} disabled={isLoading}>
           <Text style={{ color: '#f2f2f2' }}>
-            Login
+            {isLoading ? 'Logging in...' : 'Login'}
           </Text>
         </ThemedButton>
 

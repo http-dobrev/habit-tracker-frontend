@@ -18,17 +18,16 @@ export function UserProvider({ children }) {
             }
 
             await AsyncStorage.setItem("token", response.token);
-
             const currentUser = await getCurrentUser(response.token);
 
             setUser({
-                ...response.user,
+                ...currentUser,
                 token: response.token,
             });
 
             return response;
         } catch (error) {
-            throw Error(error.message);
+            throw error;
         }
     }
 
@@ -45,13 +44,13 @@ export function UserProvider({ children }) {
                 const currentUser = await getCurrentUser(response.token);
 
                 setUser({
-                    ...response.user,
+                    ...currentUser,
                     token: response.token,
                 });
 
                 return response;
             } catch (error) {
-                throw new Error(error.message);
+                throw error;
             }
         }
 
@@ -59,9 +58,8 @@ export function UserProvider({ children }) {
         try {
             await AsyncStorage.removeItem("token");
             setUser(null);
-            console.log("User logged out successfully");
         } catch (error) {
-            console.error("Error logging out:", error); 
+            throw new Error("Error during logout: " + error.message);
         }
     }
     
@@ -69,19 +67,13 @@ export function UserProvider({ children }) {
         try {
             const token = await AsyncStorage.getItem("token");
             
-            console.log("Stored token:", token);
-            
             if (token) {
                 const currentUser = await getCurrentUser(token);
-                
-                console.log("Current user from /auth/me:", currentUser);    
 
                 setUser({
                     ...currentUser,
                     token,
                 });
-
-                console.log("User authenticated:", currentUser.email);
             }
         } catch (error) {
             await AsyncStorage.removeItem("token");

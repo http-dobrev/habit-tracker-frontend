@@ -17,6 +17,7 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const { register } = useUser();
 
@@ -37,9 +38,12 @@ const Register = () => {
     }
 
     try {
+      setIsLoading(true);
       await register(name, email, password);
     } catch (error) {
       Alert.alert('Registration failed', error.message);
+    } finally {
+      setIsLoading(false);
     }
   }
   return (
@@ -74,9 +78,9 @@ const Register = () => {
           secureTextEntry={true} 
         />
 
-        <ThemedButton onPress={handleSubmit}>
+        <ThemedButton onPress={handleSubmit} disabled={isLoading}>
           <Text style={{ color: '#f2f2f2' }}>
-            Register
+            {isLoading ? 'Registering...' : 'Register'}
           </Text>
         </ThemedButton>
 

@@ -1,5 +1,5 @@
-import { StyleSheet, FlatList, View } from 'react-native'
-import { useEffect } from 'react'
+import { StyleSheet, FlatList, View, Alert } from 'react-native'
+import { useEffect, useState } from 'react'
 import { useHabits } from "../../hooks/useHabits";
 import { useRouter } from "expo-router"
 
@@ -14,9 +14,13 @@ const Habits = () => {
   const { habits, isLoadingHabits, loadHabits, deleteHabit } = useHabits();
   const router = useRouter()
 
+  const [error, setError] = useState(null)
+
   useEffect(() => {
-    loadHabits();
-  }, []);
+    loadHabits().catch((error) => {
+      setError("Failed to load habits. Please try again.")
+    });
+  }, [loadHabits]);
 
   const handleAdd = () => {
     console.log("Add new habit")
@@ -31,11 +35,24 @@ const Habits = () => {
   }
 
   const handleDelete = async (habit) => {
-  try {
-    await deleteHabit(habit.id)
-  } catch (error) {
-    console.log("Delete habit error:", error.message)
-  }
+    Alert.alert(
+        'Delete Habit',
+        `Are you sure you want to delete "${habit.name}"?`,
+        [
+            { text: 'Cancel', style: 'cancel' },
+            {
+                text: 'Delete',
+                style: 'destructive',
+                onPress: async () => {
+                    try {
+                        await deleteHabit(habit.id)
+                    } catch (error) {
+                        Alert.alert('Error', 'Failed to delete habit. Please try again.')
+                    }
+                }
+            }
+        ]
+    )
 }
   
   return (
@@ -50,6 +67,9 @@ const Habits = () => {
 
       {isLoadingHabits ? (
         <ThemedLoader />
+      
+      ) : error ? (
+        <ThemedText style={styles.centerText}>{error}</ThemedText>
       ) : habits.length === 0 ? (
         <ThemedText style={styles.centerText}>No habits yet</ThemedText>
       ) : ( 
