@@ -27,7 +27,14 @@ const Habits = () => {
   }
 
   const handleEdit = (habit) => {
-    router.push(`/edit/${habit.id}`)
+    router.push({ 
+      pathname: `/edit/${habit.id}`, 
+      params: {
+        id: habit.id,
+        initialName: habit.name,
+        initialType: habit.type,
+      }
+    })
   }
 
   const handleDelete = async (habit) => {

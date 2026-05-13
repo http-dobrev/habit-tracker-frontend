@@ -1,6 +1,6 @@
 import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { useRouter, useLocalSearchParams } from 'expo-router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useColorScheme } from 'react-native'
 
@@ -17,13 +17,20 @@ import { useHabits } from "../../../hooks/useHabits";
 const Edit = () => {
   const router = useRouter()
   const colorScheme = useColorScheme()
-  const theme = Colors[colorScheme] ?? Colors.light
+
   const { updateHabit, deleteHabit } = useHabits()
   const { id, initialName, initialType } = useLocalSearchParams()
 
+  const [loading, setLoading] = useState(false)
   const [name, setName] = useState(initialName ?? '')
   const [type, setType] = useState(initialType ?? 'good')
-  const [loading, setLoading] = useState(false)
+
+  const theme = Colors[colorScheme] ?? Colors.light
+
+  useEffect(() => {
+    setName(initialName ?? '')
+    setType(initialType ?? 'good')
+  }, [id])
 
   const handleSave = async () => {
     if (!name.trim()) return
@@ -33,15 +40,8 @@ const Edit = () => {
     router.back()
   }
 
-  const handleDelete = async () => {
-    setLoading(true)
-    await deleteHabit(id)
-    setLoading(false)
-    router.back()
-  }
-
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback key={id} onPress={Keyboard.dismiss}>
       <ThemedView style={styles.container}>
         <Pressable onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={theme.title} />
@@ -110,14 +110,6 @@ const Edit = () => {
           style={{ backgroundColor: Colors.primary }}
         >
           <ThemedText style={styles.buttonText}>Save Changes</ThemedText>
-        </ThemedButton>
-
-        <ThemedButton
-          onPress={handleDelete}
-          disabled={loading}
-          style={{ backgroundColor: Colors.warning }}
-        >
-          <ThemedText style={styles.buttonText}>Delete Habit</ThemedText>
         </ThemedButton>
 
         <ThemedButton

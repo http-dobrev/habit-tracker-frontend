@@ -22,42 +22,52 @@ const DashboardLayout = () => {
             tabBarActiveTintColor: theme.iconColorFocused,
             tabBarInactiveTintColor: theme.iconColor,
           }}
-        >
-            <Tabs.Screen 
-              name="habits" 
-              options={{ title: 'Your Habits', tabBarIcon: ({ focused }) =>
-                <Ionicons 
-                  size={24}
-                  name={focused ? 'list' : 'list-outline'} 
-                  color={focused ? theme.iconColorFocused : theme.iconColor}
-                />
-              }} 
+      >
+        <Tabs.Screen 
+          name="dashboard"
+          options={{ title: 'Dashboard', tabBarIcon: ({ focused }) =>
+            <Ionicons 
+              size={24}
+              name={focused ? 'home' : 'home-outline'} 
+              color={focused ? theme.iconColorFocused : theme.iconColor}
             />
-            <Tabs.Screen 
-              name="profile" 
-              options={{ title: 'Profile', tabBarIcon: ({ focused }) =>
-                <Ionicons 
-                  size={24}
-                  name={focused ? 'person' : 'person-outline'} 
-                  color={focused ? theme.iconColorFocused : theme.iconColor}
-                />
-              }} 
+          }}
+        />
+        <Tabs.Screen 
+          name="habits" 
+          options={{ title: 'Habits', tabBarIcon: ({ focused }) =>
+            <Ionicons 
+              size={24}
+              name={focused ? 'list' : 'list-outline'} 
+              color={focused ? theme.iconColorFocused : theme.iconColor}
             />
-            <Tabs.Screen 
-              name="create" 
-              options={{ 
-                href: null,
-                tabBarStyle: { display: 'none' },
-              }}
+          }} 
+        />
+        <Tabs.Screen 
+          name="profile" 
+          options={{ title: 'Profile', tabBarIcon: ({ focused }) =>
+            <Ionicons 
+              size={24}
+              name={focused ? 'person' : 'person-outline'} 
+              color={focused ? theme.iconColorFocused : theme.iconColor}
             />
-            <Tabs.Screen
-              name="edit/[id]"
-              options={{
-                href: null,
-                tabBarStyle: { display: 'none' },
-              }}
-            />
-        </Tabs>
+          }} 
+        />
+        <Tabs.Screen 
+          name="create" 
+          options={{ 
+            href: null,
+            tabBarStyle: { display: 'none' },
+          }}
+        />
+        <Tabs.Screen
+          name="edit/[id]"
+          options={{
+            href: null,
+            tabBarStyle: { display: 'none' },
+          }}
+        />
+      </Tabs>
     </UserOnly>
   )
 }

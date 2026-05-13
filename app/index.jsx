@@ -22,7 +22,7 @@ const Home = () => {
   }
 
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={styles.container} safe={false}>
       <ThemedLogo />
       <Spacer height={20}/>
 
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center'
+    paddingTop: 52,
   },
   title: {
     fontSize: 24,

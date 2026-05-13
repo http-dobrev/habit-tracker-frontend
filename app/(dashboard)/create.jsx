@@ -1,6 +1,6 @@
 import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import { useRouter } from 'expo-router'
-import { useState } from 'react'
+import { useRouter, useFocusEffect } from 'expo-router'
+import { useState, useCallback } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useColorScheme } from 'react-native'
 
@@ -23,6 +23,13 @@ const Create = () => {
   const [name, setName] = useState('')
   const [type, setType] = useState('good')
   const [loading, setLoading] = useState(false)
+
+  useFocusEffect(
+    useCallback(() => {
+      setName('')
+      setType('good')
+    }, [])
+  )
 
   const handleCreate = async () => {
     if (!name.trim()) return

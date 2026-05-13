@@ -55,7 +55,7 @@ export function HabitProvider({ children }) {
         }
 
         const habit = await apiUpdateHabit(id, habitData, user.token);
-        setHabits((currentHabits) => currentHabits.map((h) => (h.id === id ? habit : h)));
+        setHabits(prev => prev.map(h => h.id == id ? habit : h));
         return habit;
     }, [user?.token]);
 
