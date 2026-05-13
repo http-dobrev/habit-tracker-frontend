@@ -25,23 +25,13 @@ const DashboardLayout = () => {
         >
             <Tabs.Screen 
               name="habits" 
-              options={{ title: 'Habits', tabBarIcon: ({ focused }) =>
+              options={{ title: 'Your Habits', tabBarIcon: ({ focused }) =>
                 <Ionicons 
                   size={24}
                   name={focused ? 'list' : 'list-outline'} 
                   color={focused ? theme.iconColorFocused : theme.iconColor}
                 />
               }} 
-            />
-            <Tabs.Screen 
-              name="create" 
-              options={{ title: 'Create', tabBarIcon: ({ focused }) =>
-                <Ionicons 
-                  size={24}
-                  name={focused ? 'create' : 'create-outline'} 
-                  color={focused ? theme.iconColorFocused : theme.iconColor}
-                />
-              }}
             />
             <Tabs.Screen 
               name="profile" 
@@ -52,6 +42,20 @@ const DashboardLayout = () => {
                   color={focused ? theme.iconColorFocused : theme.iconColor}
                 />
               }} 
+            />
+            <Tabs.Screen 
+              name="create" 
+              options={{ 
+                href: null,
+                tabBarStyle: { display: 'none' },
+              }}
+            />
+            <Tabs.Screen
+              name="edit/[id]"
+              options={{
+                href: null,
+                tabBarStyle: { display: 'none' },
+              }}
             />
         </Tabs>
     </UserOnly>

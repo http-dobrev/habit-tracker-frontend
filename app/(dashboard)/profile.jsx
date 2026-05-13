@@ -12,10 +12,10 @@ const Profile = () => {
     <ThemedView style={styles.container}>
 
       <ThemedText title={true} style={styles.heading}>
-        {user?.email}
+        Profile 
       </ThemedText>
       <Spacer />
-
+      <ThemedText>{user?.email}</ThemedText>
       <ThemedText>Time to start building some habits...</ThemedText>
       <Spacer />
 
@@ -32,12 +32,13 @@ export default Profile
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
+    paddingTop: 100,
     alignItems: "center",
   },
+  
   heading: {
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 20,
     textAlign: "center",
   },
   buttonText: {

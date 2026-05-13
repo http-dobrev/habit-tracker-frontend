@@ -1,5 +1,10 @@
 import { createContext, useCallback, useEffect, useState } from "react";
-import { getHabits as apiGetHabits, deleteHabit as apiDeleteHabit } from "../lib/api";
+import { 
+    createHabit as apiCreateHabit,  
+    getHabits as apiGetHabits,
+    updateHabit as apiUpdateHabit,
+    deleteHabit as apiDeleteHabit, 
+} from "../lib/api";
 import { useUser } from "../hooks/useUser";
 
 export const HabitContext = createContext(null);
@@ -16,13 +21,21 @@ export function HabitProvider({ children }) {
         }
     }, [user?.token]);
 
-    
+    const createHabit = useCallback(async (habitData) => {
+        if (!user?.token) {
+            throw new Error("You must be logged in to create a habit.");
+        }
+
+        const habit = await apiCreateHabit(habitData, user.token);
+        setHabits((currentHabits) => [...currentHabits, habit]);
+        return habit;
+    }, [user?.token]);
+
     const loadHabits = useCallback(async () => {
         if (!user?.token) {
             setHabits([]);
             return;
         }
-
         try {
             setIsLoadingHabits(true);
             const data = await apiGetHabits(user.token);
@@ -34,6 +47,16 @@ export function HabitProvider({ children }) {
         } finally {
             setIsLoadingHabits(false);
         }
+    }, [user?.token]);
+
+    const updateHabit = useCallback(async (id, habitData) => {
+        if (!user?.token) {
+            throw new Error("You must be logged in to update a habit.");
+        }
+
+        const habit = await apiUpdateHabit(id, habitData, user.token);
+        setHabits((currentHabits) => currentHabits.map((h) => (h.id === id ? habit : h)));
+        return habit;
     }, [user?.token]);
 
     const deleteHabit = useCallback(async (id) => {
@@ -53,7 +76,9 @@ export function HabitProvider({ children }) {
             value={{
                 habits,
                 isLoadingHabits,
+                createHabit,
                 loadHabits,
+                updateHabit,
                 deleteHabit,
             }}
         >

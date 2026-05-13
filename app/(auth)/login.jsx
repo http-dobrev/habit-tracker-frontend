@@ -82,7 +82,6 @@ const Login = () => {
 
       </ThemedView>
     </TouchableWithoutFeedback>
-
   )
 }
 

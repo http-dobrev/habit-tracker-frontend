@@ -22,16 +22,12 @@ const Habits = () => {
     });
   }, [loadHabits]);
 
-  const handleAdd = () => {
-    console.log("Add new habit")
-    // later:
-    // router.push("/add")
+  const handleCreate = () => {
+    router.push("/create")
   }
 
   const handleEdit = (habit) => {
-    console.log("Edit habit:", habit)
-    // later:
-    // router.push(`/edit/${habit.id}`)
+    router.push(`/edit/${habit.id}`)
   }
 
   const handleDelete = async (habit) => {
@@ -89,7 +85,7 @@ const Habits = () => {
       {!isLoadingHabits && (
         <ThemedButton
           style={styles.addButton}
-          onPress={() => router.push("/create")}
+          onPress={() => handleCreate()}
         >
           <ThemedText style={styles.addButtonText}>
             + Add Habit
@@ -110,7 +106,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     fontWeight: "bold",
-    fontSize: 18,
+    fontSize: 20,
     textAlign: "center",
   },
   list: {

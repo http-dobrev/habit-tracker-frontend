@@ -1,33 +1,41 @@
 import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import { useRouter } from 'expo-router'
+import { useRouter, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useColorScheme } from 'react-native'
 
-import ThemedView from '../../components/ThemedView'
-import ThemedCard from '../../components/ThemedCard'
-import ThemedText from '../../components/ThemedText'
-import ThemedTextInput from '../../components/ThemedTextInput'
-import ThemedButton from '../../components/ThemedButton'
-import Spacer from '../../components/Spacer'
+import ThemedView from '../../../components/ThemedView'
+import ThemedCard from '../../../components/ThemedCard'
+import ThemedText from '../../../components/ThemedText'
+import ThemedTextInput from '../../../components/ThemedTextInput'
+import ThemedButton from '../../../components/ThemedButton'
+import Spacer from '../../../components/Spacer'
 
-import { Colors } from '../../constants/Colors'
-import { useHabits } from "../../hooks/useHabits";
+import { Colors } from '../../../constants/Colors'
+import { useHabits } from "../../../hooks/useHabits";
 
-const Create = () => {
+const Edit = () => {
   const router = useRouter()
   const colorScheme = useColorScheme()
   const theme = Colors[colorScheme] ?? Colors.light
-  const { createHabit } = useHabits()
+  const { updateHabit, deleteHabit } = useHabits()
+  const { id, initialName, initialType } = useLocalSearchParams()
 
-  const [name, setName] = useState('')
-  const [type, setType] = useState('good')
+  const [name, setName] = useState(initialName ?? '')
+  const [type, setType] = useState(initialType ?? 'good')
   const [loading, setLoading] = useState(false)
 
-  const handleCreate = async () => {
+  const handleSave = async () => {
     if (!name.trim()) return
     setLoading(true)
-    await createHabit({ name: name.trim(), type })
+    await updateHabit(id, { name: name.trim(), type })
+    setLoading(false)
+    router.back()
+  }
+
+  const handleDelete = async () => {
+    setLoading(true)
+    await deleteHabit(id)
     setLoading(false)
     router.back()
   }
@@ -40,7 +48,7 @@ const Create = () => {
         </Pressable>
 
         <ThemedText title={true} style={styles.heading}>
-          Add a New Habit
+          Edit Habit
         </ThemedText>
 
         <Spacer />
@@ -97,11 +105,19 @@ const Create = () => {
         </ThemedCard>
 
         <ThemedButton
-          onPress={handleCreate}
+          onPress={handleSave}
           disabled={loading || !name.trim()}
           style={{ backgroundColor: Colors.primary }}
         >
-          <ThemedText style={styles.buttonText}>Add Habit</ThemedText>
+          <ThemedText style={styles.buttonText}>Save Changes</ThemedText>
+        </ThemedButton>
+
+        <ThemedButton
+          onPress={handleDelete}
+          disabled={loading}
+          style={{ backgroundColor: Colors.warning }}
+        >
+          <ThemedText style={styles.buttonText}>Delete Habit</ThemedText>
         </ThemedButton>
 
         <ThemedButton
@@ -114,10 +130,11 @@ const Create = () => {
         </ThemedButton>
       </ThemedView>
     </TouchableWithoutFeedback>
+    
   )
 }
 
-export default Create
+export default Edit
 
 const styles = StyleSheet.create({
   container: {
@@ -153,8 +170,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 14,
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#adadad',
     alignItems: 'center',
   },
   typeButtonText: {
