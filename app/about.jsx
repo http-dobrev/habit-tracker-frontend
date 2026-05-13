@@ -11,7 +11,7 @@ const About = () => {
       <ThemedText style={styles.title} title={true}>
         About Page
       </ThemedText>
-
+      <Spacer />
       <Link href="/" style={styles.link}>
         <ThemedText>Back to Home</ThemedText>
       </Link>

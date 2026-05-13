@@ -10,13 +10,30 @@ export function UserProvider({ children }) {
     const [isInitialized, setIsInitialized] = useState(false);
 
     async function login(email, password) {
-        try {
-            const response = await apiLogin(email, password);
+        const response = await apiLogin(email, password);
+
+        if (!response || !response.token) {
+            throw new Error("Invalid email or password");
+        }
+
+        await AsyncStorage.setItem("token", response.token);
+        const currentUser = await getCurrentUser(response.token);
+
+        setUser({
+            ...currentUser,
+            token: response.token,
+        });
+
+        return response;
+    }
+
+    async function register(name, email, password) {
+            const response = await apiRegister(name, email, password);
 
             if (!response || !response.token) {
                 throw new Error("Invalid email or password");
             }
-
+            
             await AsyncStorage.setItem("token", response.token);
             const currentUser = await getCurrentUser(response.token);
 
@@ -26,41 +43,11 @@ export function UserProvider({ children }) {
             });
 
             return response;
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    async function register(name, email, password) {
-            try {
-                const response = await apiRegister(name, email, password);
-
-                if (!response || !response.token) {
-                    throw new Error("Invalid email or password");
-                }
-                
-                await AsyncStorage.setItem("token", response.token);
-
-                const currentUser = await getCurrentUser(response.token);
-
-                setUser({
-                    ...currentUser,
-                    token: response.token,
-                });
-
-                return response;
-            } catch (error) {
-                throw error;
-            }
         }
 
     async function logout() {
-        try {
-            await AsyncStorage.removeItem("token");
-            setUser(null);
-        } catch (error) {
-            throw new Error("Error during logout: " + error.message);
-        }
+        await AsyncStorage.removeItem("token");
+        setUser(null);
     }
     
     async function initializeAuth() {

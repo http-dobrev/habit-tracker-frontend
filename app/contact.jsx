@@ -11,7 +11,7 @@ const Contact = () => {
       <ThemedText style={styles.title} title={true}>
         Contact Page
       </ThemedText>
-
+      <Spacer />
       <Link href="/" style={styles.link}>
         <ThemedText>Back to Home</ThemedText>
       </Link>

@@ -15,13 +15,11 @@ import ThemedTextInput from '../../components/ThemedTextInput'
 const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-          
+  const [error, setError] = useState(null);
   const { login } = useUser()
   
   const handleSubmit = async () => {
-    setError(null); 
     if (!isValidEmail(email)) {
       Alert.alert('Invalid email', 'Please enter a valid email address.')
       return
@@ -36,7 +34,7 @@ const Login = () => {
       setIsLoading(true);
       await login(email, password);
     } catch (error) {
-      Alert.alert('Login failed', 'Invalid email or password. Please try again.');
+      Alert.alert('Login failed', error.message);
     } finally {
       setIsLoading(false);
     }

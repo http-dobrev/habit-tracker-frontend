@@ -4,7 +4,7 @@ import { useUser } from "../../hooks/useUser"
 import Spacer from "../../components/Spacer"
 import ThemedText from "../../components/ThemedText"
 import ThemedView from "../../components/ThemedView"
-import Themedbutton from "../../components/ThemedButton"
+import ThemedButton from "../../components/ThemedButton"
 
 const Profile = () => {
   const { logout, user } = useUser()
@@ -19,9 +19,9 @@ const Profile = () => {
       <ThemedText>Time to start building some habits...</ThemedText>
       <Spacer />
 
-      <Themedbutton onPress={logout}>  
+      <ThemedButton onPress={logout}>  
         <Text style={styles.buttonText}>Logout</Text>
-      </Themedbutton>
+      </ThemedButton>
 
     </ThemedView>
   )

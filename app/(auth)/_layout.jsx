@@ -1,5 +1,5 @@
 import { Stack } from "expo-router"
-import { StatusBar } from "react-native"
+import { StatusBar } from "expo-status-bar"
 import { useUser } from "../../hooks/useUser"
 
 import GuestOnly from "../../components/auth/GuestOnly";

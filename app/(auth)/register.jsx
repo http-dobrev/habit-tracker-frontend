@@ -16,13 +16,11 @@ const Register = () => {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-
+  const [error, setError] = useState(null);
   const { register } = useUser();
 
   const handleSubmit =  async () => {
-    setError(null);
     if (!isValidName(name)) {
       Alert.alert('Invalid name', 'Please enter a name.')
       return

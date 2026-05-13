@@ -71,7 +71,7 @@ const Habits = () => {
       ) : error ? (
         <ThemedText style={styles.centerText}>{error}</ThemedText>
       ) : habits.length === 0 ? (
-        <ThemedText style={styles.centerText}>No habits yet</ThemedText>
+        <ThemedText style={styles.centerText}>No habits yet — tap + to add your first one</ThemedText>
       ) : ( 
         <FlatList
           data={habits}
@@ -105,7 +105,6 @@ export default Habits
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //justifyContent: "center",
     alignItems: "stretch",
     paddingTop: 52,
   },
