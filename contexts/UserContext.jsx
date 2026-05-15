@@ -22,13 +22,13 @@ export function UserProvider({ children }) {
 
         await AsyncStorage.setItem("token", response.token);
         const currentUser = await getCurrentUser(response.token);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
 
         setUser({
             ...currentUser,
             token: response.token,
+            refreshToken: response.refreshToken
         });
-
-        return response;
     }
 
     async function register(name, email, password) {
@@ -39,41 +39,44 @@ export function UserProvider({ children }) {
             }
             
             await AsyncStorage.setItem("token", response.token);
+            await AsyncStorage.setItem('refreshToken', response.refreshToken);
             const currentUser = await getCurrentUser(response.token);
 
             setUser({
                 ...currentUser,
                 token: response.token,
+                refreshToken: response.refreshToken
             });
-
-            return response;
         }
 
     async function logout() {
-        await AsyncStorage.removeItem("token");
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        if (refreshToken) await logoutApi(refreshToken).catch(() => {});
+        await AsyncStorage.multiRemove(['token', 'refreshToken']);
         setUser(null);
-    }
+    };
     
-    async function initializeAuth() {
-        try {
-            const token = await AsyncStorage.getItem("token");
-            
-            if (token) {
-                const currentUser = await getCurrentUser(token);
+    async function initializeAuth(){
+        const token = await AsyncStorage.getItem('token');
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        if (!token || !refreshToken) { setIsInitialized(true); return; }
 
-                setUser({
-                    ...currentUser,
-                    token,
-                });
+        try {
+            const userData = await getCurrentUser(token);
+            setUser({ ...userData, token, refreshToken });
+        } catch {
+            // Access token expired — try refresh
+            try {
+            const { token: newToken } = await refreshAccessToken(refreshToken);
+            await AsyncStorage.setItem('token', newToken);
+            const userData = await getCurrentUser(newToken);
+            setUser({ ...userData, token: newToken, refreshToken });
+            } catch {
+            await AsyncStorage.multiRemove(['token', 'refreshToken']);
             }
-        } catch (error) {
-            await AsyncStorage.removeItem("token");
-            setUser(null);
-            console.error("Error initializing authentication:", error);
-        } finally {
-            setIsInitialized(true);
         }
-    }
+        setIsInitialized(true);
+    };
 
     return (
         <UserContext.Provider value={{ user, isInitialized, login, register, logout }}>
