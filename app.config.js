@@ -17,6 +17,9 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.dobrev.habittracker",
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false,
+      },
     },
     android: {
       adaptiveIcon: {
