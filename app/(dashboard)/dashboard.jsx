@@ -38,8 +38,7 @@ const Dashboard = () => {
     const totalCount = dailyHabits.length
     const completedCount = dailyHabits.filter(h => h.completed).length
     const successCount = dailyHabits.filter(h =>
-        (h.habitType?.toUpperCase() === "GOOD" && h.completed) ||
-        (h.habitType?.toUpperCase() === "BAD" && !h.completed)
+        (h.completed)
     ).length
     const dailyScore = totalCount > 0 ? Math.round((successCount / totalCount) * 100) : 0
 

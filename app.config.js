@@ -16,6 +16,7 @@ export default {
     },
     ios: {
       supportsTablet: true,
+      bundleIdentifier: "com.dobrev.habittracker",
     },
     android: {
       adaptiveIcon: {
@@ -29,6 +30,9 @@ export default {
     plugins: ["expo-router"],
     extra: {
       apiUrl: process.env.API_URL,
+      eas: {
+        projectId: "da2ab943-e04b-4669-997f-fceaf704a060",
+      },
     },
   },
 };

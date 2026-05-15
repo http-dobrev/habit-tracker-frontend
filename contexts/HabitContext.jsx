@@ -65,9 +65,9 @@ export function HabitProvider({ children }) {
         }
 
         await apiDeleteHabit(id, user.token);
-
+        
         setHabits((currentHabits) =>
-            currentHabits.filter((habit) => habit.id !== id)
+            currentHabits.filter((habit) => String(habit.id) !== String(id))
         );
     }, [user?.token]);
 

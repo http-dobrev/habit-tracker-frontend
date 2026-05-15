@@ -28,7 +28,6 @@ const Habits = () => {
     router.push({ 
       pathname: `/edit/${habit.id}`, 
       params: {
-        id: habit.id,
         initialName: habit.name,
         initialType: habit.type,
       }
@@ -47,8 +46,8 @@ const Habits = () => {
           onPress: async () => {
             try {
               await deleteHabit(habit.id)
-            } catch {
-              Alert.alert('Error', 'Failed to delete habit. Please try again.')
+            } catch (error){
+              Alert.alert('Error', error.message)
             }
           }
         }
