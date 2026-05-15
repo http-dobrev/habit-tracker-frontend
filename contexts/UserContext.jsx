@@ -9,6 +9,10 @@ export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [isInitialized, setIsInitialized] = useState(false);
 
+    useEffect(() => {
+        initializeAuth();
+    }, []);
+
     async function login(email, password) {
         const response = await apiLogin(email, password);
 
@@ -70,10 +74,6 @@ export function UserProvider({ children }) {
             setIsInitialized(true);
         }
     }
-    
-    useEffect(() => {
-        initializeAuth();
-    }, []);
 
     return (
         <UserContext.Provider value={{ user, isInitialized, login, register, logout }}>

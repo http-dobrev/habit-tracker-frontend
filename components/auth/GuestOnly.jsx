@@ -9,7 +9,7 @@ const GuestOnly = ({ children }) => {
 
     useEffect(() => {
         if (isInitialized && user !== null) {
-            router.replace('/(dashboard)/habits');
+            router.replace('/(dashboard)/dashboard');
         }
     }, [user, isInitialized]);
     

@@ -3,6 +3,7 @@ import { useRouter, useFocusEffect } from 'expo-router'
 import { useState, useCallback } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { useColorScheme } from 'react-native'
+import { Spacing, FontSize, Radius } from '../../constants/Spacing'
 
 import ThemedView from '../../components/ThemedView'
 import ThemedCard from '../../components/ThemedCard'
@@ -36,13 +37,13 @@ const Create = () => {
     setLoading(true)
     await createHabit({ name: name.trim(), type })
     setLoading(false)
-    router.back()
+    router.replace('/habits')
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ThemedView style={styles.container}>
-        <Pressable onPress={() => router.back()} style={styles.backButton}>
+        <Pressable onPress={() => router.replace('/habits')} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color={theme.title} />
         </Pressable>
 
@@ -62,62 +63,33 @@ const Create = () => {
             style={styles.input}
           />
 
-          <ThemedText style={[styles.label, { marginTop: 16 }]}>Habit Type</ThemedText>
+          <ThemedText style={[styles.label, styles.labelSpacing]}>Habit Type</ThemedText>
           <View style={styles.typeRow}>
             <Pressable
-              style={[
-                styles.typeButton,
-                type === 'good'
-                  ? { backgroundColor: Colors.primary }
-                  : { backgroundColor: theme.uiBackground },
-              ]}
+              style={[styles.typeButton, { backgroundColor: type === 'good' ? Colors.primary : theme.uiBackground }]}
               onPress={() => setType('good')}
             >
-              <ThemedText
-                style={[
-                  styles.typeButtonText,
-                  { color: type === 'good' ? '#fff' : theme.text },
-                ]}
-              >
+              <ThemedText style={[styles.typeButtonText, { color: type === 'good' ? '#fff' : theme.text }]}>
                 Good Habit
               </ThemedText>
             </Pressable>
             <Pressable
-              style={[
-                styles.typeButton,
-                type === 'bad'
-                  ? { backgroundColor: Colors.warning }
-                  : { backgroundColor: theme.uiBackground },
-              ]}
+              style={[styles.typeButton, { backgroundColor: type === 'bad' ? Colors.warning : theme.uiBackground }]}
               onPress={() => setType('bad')}
             >
-              <ThemedText
-                style={[
-                  styles.typeButtonText,
-                  { color: type === 'bad' ? '#fff' : theme.text },
-                ]}
-              >
+              <ThemedText style={[styles.typeButtonText, { color: type === 'bad' ? '#fff' : theme.text }]}>
                 Bad Habit
               </ThemedText>
             </Pressable>
           </View>
         </ThemedCard>
 
-        <ThemedButton
-          onPress={handleCreate}
-          disabled={loading || !name.trim()}
-          style={{ backgroundColor: Colors.primary }}
-        >
+        <ThemedButton onPress={handleCreate} disabled={loading || !name.trim()} style={{ backgroundColor: Colors.primary }}>
           <ThemedText style={styles.buttonText}>Add Habit</ThemedText>
         </ThemedButton>
 
-        <ThemedButton
-          onPress={() => router.back()}
-          style={styles.cancelButton}
-        >
-          <ThemedText style={[styles.buttonText, { color: theme.title }]}>
-            Cancel
-          </ThemedText>
+        <ThemedButton onPress={() => router.replace('/habits')} style={styles.cancelButton}>
+          <ThemedText style={[styles.buttonText, { color: theme.title }]}>Cancel</ThemedText>
         </ThemedButton>
       </ThemedView>
     </TouchableWithoutFeedback>
@@ -129,17 +101,17 @@ export default Create
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 16,
-    paddingTop: 52,
+    paddingHorizontal: Spacing.screenPaddingHorizontal,
+    paddingTop: Spacing.xxl,
   },
   backButton: {
-    marginTop: 10,
-    marginBottom: 8,
+    marginTop: Spacing.sm,
+    marginBottom: Spacing.sm,
     alignSelf: 'flex-start',
   },
   heading: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: FontSize.xl,
     textAlign: "center",
   },
   card: {
@@ -147,19 +119,22 @@ const styles = StyleSheet.create({
   },
   label: {
     fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
+  },
+  labelSpacing: {
+    marginTop: Spacing.md,
   },
   input: {
     width: '100%',
   },
   typeRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: Spacing.sm,
   },
   typeButton: {
     flex: 1,
-    padding: 14,
-    borderRadius: 8,
+    padding: Spacing.md,
+    borderRadius: Radius.lg,
     borderWidth: 1,
     borderColor: '#adadad',
     alignItems: 'center',
@@ -171,7 +146,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: FontSize.md,
   },
   cancelButton: {
     backgroundColor: 'transparent',

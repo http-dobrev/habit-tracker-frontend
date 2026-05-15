@@ -1,6 +1,7 @@
 import { StyleSheet, Text} from 'react-native'
 import { Link, Redirect } from 'expo-router'
 import { useUser } from "../hooks/useUser"
+import { Spacing, FontSize } from '../constants/Spacing';
 
 import Logo from '../assets/img/logo-light.png'
 import ThemedView from '../components/ThemedView'
@@ -8,6 +9,8 @@ import ThemedLogo from '../components/ThemedLogo'
 import Spacer from '../components/Spacer'
 import ThemedText from '../components/ThemedText'
 import ThemedLoader from '../components/ThemedLoader'
+
+
 
 const Home = () => {
 
@@ -18,7 +21,7 @@ const Home = () => {
   }
 
   if (user) {
-    return <Redirect href="/(dashboard)/habits" />;
+    return <Redirect href="/(dashboard)/dashboard" />;
   }
 
   return (
@@ -51,14 +54,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    paddingTop: 52,
+    paddingTop: Spacing.screenPaddingTop,
   },
   title: {
-    fontSize: 24,
+    fontSize: FontSize.xxl,
     fontWeight: 'bold',
   },
   link: {
-    marginVertical: 10,
+    marginVertical: Spacing.sm,
     borderBottomWidth: 1,
   },
 })  

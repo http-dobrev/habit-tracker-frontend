@@ -1,7 +1,8 @@
-import { StyleSheet, FlatList, View, Alert } from 'react-native'
+import { StyleSheet, FlatList, Alert } from 'react-native'
 import { useEffect, useState } from 'react'
 import { useHabits } from "../../hooks/useHabits";
 import { useRouter } from "expo-router"
+import { Spacing, FontSize } from '../../constants/Spacing'
 
 import Spacer from "../../components/Spacer"
 import ThemedText from "../../components/ThemedText"
@@ -13,18 +14,15 @@ import ThemedButton from "../../components/ThemedButton"
 const Habits = () => {
   const { habits, isLoadingHabits, loadHabits, deleteHabit } = useHabits();
   const router = useRouter()
-
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    loadHabits().catch((error) => {
+    loadHabits().catch(() => {
       setError("Failed to load habits. Please try again.")
     });
   }, [loadHabits]);
 
-  const handleCreate = () => {
-    router.push("/create")
-  }
+  const handleCreate = () => router.push("/create")
 
   const handleEdit = (habit) => {
     router.push({ 
@@ -39,38 +37,35 @@ const Habits = () => {
 
   const handleDelete = async (habit) => {
     Alert.alert(
-        'Delete Habit',
-        `Are you sure you want to delete "${habit.name}"?`,
-        [
-            { text: 'Cancel', style: 'cancel' },
-            {
-                text: 'Delete',
-                style: 'destructive',
-                onPress: async () => {
-                    try {
-                        await deleteHabit(habit.id)
-                    } catch (error) {
-                        Alert.alert('Error', 'Failed to delete habit. Please try again.')
-                    }
-                }
+      'Delete Habit',
+      `Are you sure you want to delete "${habit.name}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deleteHabit(habit.id)
+            } catch {
+              Alert.alert('Error', 'Failed to delete habit. Please try again.')
             }
-        ]
+          }
+        }
+      ]
     )
-}
+  }
   
   return (
     <ThemedView style={styles.container}>
-
       <Spacer />
       <ThemedText title={true} style={styles.heading}>
         Manage Habits
       </ThemedText>
-
       <Spacer />
 
       {isLoadingHabits ? (
         <ThemedLoader />
-      
       ) : error ? (
         <ThemedText style={styles.centerText}>{error}</ThemedText>
       ) : habits.length === 0 ? (
@@ -89,14 +84,10 @@ const Habits = () => {
           )}
         />
       )}
+
       {!isLoadingHabits && (
-        <ThemedButton
-          style={styles.addButton}
-          onPress={() => handleCreate()}
-        >
-          <ThemedText style={styles.addButtonText}>
-            + Add Habit
-          </ThemedText>
+        <ThemedButton style={styles.addButton} onPress={handleCreate}>
+          <ThemedText style={styles.addButtonText}>+ Add Habit</ThemedText>
         </ThemedButton>
       )}
     </ThemedView>
@@ -109,32 +100,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "stretch",
-    paddingTop: 52,
+    paddingTop: Spacing.xxl,
   },
   heading: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: FontSize.xl,
     textAlign: "center",
   },
   list: {
-    paddingHorizontal: 16,
+    paddingHorizontal: Spacing.screenPaddingHorizontal,
     paddingBottom: 180,
   },
   centerText: {
     textAlign: "center",
-    marginTop: 20,
+    marginTop: Spacing.lg,
   },
   addButton: {
     position: "absolute",
-    left: 32,
-    right: 32,
-    bottom: 15,
+    left: Spacing.xl,
+    right: Spacing.xl,
+    bottom: Spacing.md,
     alignItems: "center",
   },
-
   addButtonText: {
     color: "#fff",
     fontWeight: "700",
-    fontSize: 16,
+    fontSize: FontSize.md,
   },
 })

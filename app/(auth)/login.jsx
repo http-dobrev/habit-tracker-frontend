@@ -1,9 +1,10 @@
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, Alert} from 'react-native'
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
 import { Colors } from '../../constants/Colors'
 import { useState } from 'react'
 import { useUser } from '../../hooks/useUser'
 import { isValidEmail, isValidPassword } from '../../lib/authValidator'
+import { Spacing, FontSize, Radius } from '../../constants/Spacing';
 
 //themed components
 import ThemedView from '../../components/ThemedView'
@@ -33,6 +34,7 @@ const Login = () => {
     try {
       setIsLoading(true);
       await login(email, password);
+      router.replace("/dashboard");
     } catch (error) {
       Alert.alert('Login failed', error.message);
     } finally {
@@ -49,7 +51,7 @@ const Login = () => {
         </ThemedText>
 
         <ThemedTextInput
-          style={{ width: '80%', marginBottom: 20}} 
+          style={styles.input}
           placeholder="Email" 
           keyboardType="email-address"
           onChangeText={setEmail}
@@ -57,7 +59,7 @@ const Login = () => {
         />
 
         <ThemedTextInput 
-          style={{ width: '80%', marginBottom: 20}} 
+          style={styles.input}
           placeholder="Password" 
           onChangeText={setPassword}
           value={password}
@@ -65,7 +67,7 @@ const Login = () => {
         />
 
         <ThemedButton onPress={handleSubmit} disabled={isLoading}>
-          <Text style={{ color: '#f2f2f2' }}>
+          <Text style={styles.btn}>
             {isLoading ? 'Logging in...' : 'Login'}
           </Text>
         </ThemedButton>
@@ -75,45 +77,53 @@ const Login = () => {
 
         <Spacer height={100} />
         <Link href="/register" style={styles.link}>
-          <ThemedText style={{ textAlign: 'center'}}>
-              Dont have an account? Create one here
+          <ThemedText style={styles.linkText}>
+            Dont have an account? Create one here
           </ThemedText>
         </Link>
 
       </ThemedView>
     </TouchableWithoutFeedback>
-
   )
 }
 
 export default Login
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    title: {
-      textAlign: 'center',
-      fontSize: 18,
-      marginBottom: 30,
-    },
-    btn: { 
-      backgroundColor: Colors.primary,
-      padding: 15,
-      borderRadius: 5,
-    },
-    pressed: {
-        opacity: 0.8,
-    },
-    error: {
-      color: Colors.warning,
-      padding: 10,
-      backgroundColor: '#f5c1c8',
-      borderColor: Colors.warning,
-      borderWidth: 1,
-      borderRadius: 6,
-      marginHorizontal: 10,
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: FontSize.lg,
+    marginBottom: Spacing.lg,
+  },
+  input: {
+    width: '80%',
+    marginBottom: Spacing.lg,
+  },
+  btn: {
+    backgroundColor: Colors.primary,
+    paddingVertical: Spacing.xxs,
+    paddingHorizontal: Spacing.md,
+    color: '#fff',
+    fontWeight: "bold",
+  },
+  pressed: {
+    opacity: 0.8,
+  },
+  error: {
+    color: Colors.warning,
+    padding: Spacing.sm,
+    backgroundColor: '#f5c1c8',
+    borderColor: Colors.warning,
+    borderWidth: 1,
+    borderRadius: Radius.md,
+    marginHorizontal: Spacing.sm,
+  },
+  linkText: {
+    textAlign: 'center',
+  },
 })

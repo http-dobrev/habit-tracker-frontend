@@ -22,7 +22,7 @@ const UserOnly = ({ children }) => {
 
         // User IS logged in
         if (user && inAuthGroup) {
-            router.replace("/(dashboard)/habits");
+            router.replace("/(dashboard)/dashboard");
         }
     }, [user, isInitialized]);
     
