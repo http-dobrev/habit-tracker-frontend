@@ -10,8 +10,6 @@ import Spacer from '../components/Spacer'
 import ThemedText from '../components/ThemedText'
 import ThemedLoader from '../components/ThemedLoader'
 
-
-
 const Home = () => {
 
   const { user, isInitialized } = useUser();
