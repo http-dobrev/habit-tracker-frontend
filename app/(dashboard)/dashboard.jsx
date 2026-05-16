@@ -1,6 +1,7 @@
 import { StyleSheet, FlatList, View } from "react-native"
-import { useEffect, useState } from "react"
+import { useState, useCallback } from "react"
 import { useColorScheme } from "react-native"
+import { useFocusEffect } from "expo-router"
 import { Spacing, FontSize } from "../../constants/Spacing"
 import { Colors } from "../../constants/Colors"
 
@@ -21,11 +22,13 @@ const Dashboard = () => {
     const { dailyHabits, isLoadingDailyHabits, loadTodayHabits, updateHabitCompletion } = useHabitCompletions()
     const [error, setError] = useState(null)
 
-    useEffect(() => {
-        loadTodayHabits().catch(() => {
-            setError("Failed to load today's habits. Please try again.")
-        })
-    }, [loadTodayHabits])
+    useFocusEffect(
+        useCallback(() => {
+            loadTodayHabits().catch(() => {
+                setError("Failed to load today's habits. Please try again.")
+            })
+        }, [loadTodayHabits])
+    )
 
     const handleToggle = async (habitId, completed) => {
         try {

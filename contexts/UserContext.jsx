@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { register as apiRegister, login as apiLogin, getCurrentUser } from "../lib/api";
+import { register as apiRegister, login as apiLogin, getCurrentUser, verifyEmail as apiVerifyEmail, resendVerification as apiResendVerification } from "../lib/api";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -8,6 +8,7 @@ export const UserContext = createContext(null);
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [pendingEmail, setPendingEmail] = useState(null);
 
     useEffect(() => {
         initializeAuth();
@@ -32,22 +33,29 @@ export function UserProvider({ children }) {
     }
 
     async function register(name, email, password) {
-            const response = await apiRegister(name, email, password);
+        await apiRegister(name, email, password);
+        setPendingEmail(email);
+    }
 
-            if (!response || !response.token) {
-                throw new Error("Invalid email or password");
-            }
-            
-            await AsyncStorage.setItem("token", response.token);
-            await AsyncStorage.setItem('refreshToken', response.refreshToken);
-            const currentUser = await getCurrentUser(response.token);
+    async function verifyEmail(code) {
+        if (!pendingEmail) throw new Error("No pending email verification.");
+        const response = await apiVerifyEmail(pendingEmail, code);
 
-            setUser({
-                ...currentUser,
-                token: response.token,
-                refreshToken: response.refreshToken
-            });
+        if (!response || !response.token) {
+            throw new Error("Verification failed. Please try again.");
         }
+
+        await AsyncStorage.setItem("token", response.token);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
+        const currentUser = await getCurrentUser(response.token);
+        setPendingEmail(null);
+        setUser({ ...currentUser, token: response.token, refreshToken: response.refreshToken });
+    }
+
+    async function resendVerification() {
+        if (!pendingEmail) throw new Error("No pending email verification.");
+        await apiResendVerification(pendingEmail);
+    }
 
     async function logout() {
         const refreshToken = await AsyncStorage.getItem('refreshToken');
@@ -79,7 +87,7 @@ export function UserProvider({ children }) {
     };
 
     return (
-        <UserContext.Provider value={{ user, isInitialized, login, register, logout }}>
+        <UserContext.Provider value={{ user, isInitialized, pendingEmail, login, register, logout, verifyEmail, resendVerification }}>
             {children}
         </UserContext.Provider>
     )

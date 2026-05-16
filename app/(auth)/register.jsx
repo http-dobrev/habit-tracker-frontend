@@ -1,5 +1,5 @@
 import { Keyboard, StyleSheet, Text, TouchableWithoutFeedback, Alert} from 'react-native'
-import { Link } from 'expo-router'
+import { Link, useRouter } from 'expo-router'
 import { Colors } from '../../constants/Colors'
 import { useState } from 'react'
 import { useUser } from '../../hooks/useUser'
@@ -19,6 +19,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null);
   const { register } = useUser();
+  const router = useRouter();
 
   const handleSubmit = async () => {
     if (!isValidName(name)) {
@@ -37,6 +38,7 @@ const Register = () => {
     try {
       setIsLoading(true);
       await register(name, email, password);
+      router.replace('/verify-email');
     } catch (error) {
       Alert.alert('Registration failed', error.message);
     } finally {
