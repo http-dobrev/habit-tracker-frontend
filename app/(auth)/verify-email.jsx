@@ -71,7 +71,8 @@ const VerifyEmail = () => {
 
         <ThemedText style={styles.subtitle}>
           We sent a 6-digit verification code to{'\n'}
-          <Text style={styles.email}>{pendingEmail}</Text>
+          <Text style={styles.email}>{pendingEmail}{'\n'}</Text>
+          Please check your spam folder if you don't see it in your inbox.
         </ThemedText>
 
         <Spacer height={Spacing.xl} />
