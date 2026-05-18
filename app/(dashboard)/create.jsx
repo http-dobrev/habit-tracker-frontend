@@ -2,7 +2,7 @@ import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard } from 
 import { useRouter, useFocusEffect } from 'expo-router'
 import { useState, useCallback } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useColorScheme } from 'react-native'
+import { useTheme } from '../../contexts/ThemeContext'
 import { Spacing, FontSize, Radius } from '../../constants/Spacing'
 
 import ThemedView from '../../components/ThemedView'
@@ -17,7 +17,7 @@ import { useHabits } from "../../hooks/useHabits";
 
 const Create = () => {
   const router = useRouter()
-  const colorScheme = useColorScheme()
+  const { colorScheme } = useTheme()
   const theme = Colors[colorScheme] ?? Colors.light
   const { createHabit } = useHabits()
 

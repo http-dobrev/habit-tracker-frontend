@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { register as apiRegister, login as apiLogin, getCurrentUser, verifyEmail as apiVerifyEmail, resendVerification as apiResendVerification } from "../lib/api";
+import { register as apiRegister, login as apiLogin, getCurrentUser, verifyEmail as apiVerifyEmail, resendVerification as apiResendVerification, refreshAccessToken, logoutApi } from "../lib/api";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 

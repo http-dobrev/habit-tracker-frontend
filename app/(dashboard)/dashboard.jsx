@@ -1,9 +1,9 @@
 import { StyleSheet, FlatList, View } from "react-native"
-import { useState, useCallback } from "react"
-import { useColorScheme } from "react-native"
+import { useState, useCallback, useRef } from "react"
 import { useFocusEffect } from "expo-router"
 import { Spacing, FontSize } from "../../constants/Spacing"
 import { Colors } from "../../constants/Colors"
+import { useTheme } from "../../contexts/ThemeContext"
 
 import ThemedView from "../../components/ThemedView"
 import ThemedText from "../../components/ThemedText"
@@ -14,20 +14,30 @@ import DateHeader from "../../components/DateHeader"
 import Spacer from "../../components/Spacer"
 
 import { useHabitCompletions } from "../../hooks/useHabitCompletions"
+import { useHabits } from "../../hooks/useHabits"
 
 const Dashboard = () => {
-    const colorScheme = useColorScheme()
+    const { colorScheme } = useTheme()
     const theme = Colors[colorScheme] ?? Colors.light
 
     const { dailyHabits, isLoadingDailyHabits, loadTodayHabits, updateHabitCompletion } = useHabitCompletions()
+    const { lastHabitChange } = useHabits()
     const [error, setError] = useState(null)
+    const [showLoader, setShowLoader] = useState(true)
+    const lastFetchedChange = useRef(null)
 
     useFocusEffect(
         useCallback(() => {
-            loadTodayHabits().catch(() => {
-                setError("Failed to load today's habits. Please try again.")
-            })
-        }, [loadTodayHabits])
+            const needsLoader = lastFetchedChange.current !== lastHabitChange
+            if (needsLoader) setShowLoader(true)
+            lastFetchedChange.current = lastHabitChange
+
+            loadTodayHabits()
+                .catch(() => {
+                    setError("Failed to load today's habits. Please try again.")
+                })
+                .finally(() => setShowLoader(false))
+        }, [loadTodayHabits, lastHabitChange])
     )
 
     const handleToggle = async (habitId, completed) => {
@@ -47,12 +57,13 @@ const Dashboard = () => {
 
     return (
         <ThemedView style={styles.container} safe={false}>
+            <Spacer />
             <ThemedText title={true} style={styles.heading}>Today</ThemedText>
             <DateHeader />
 
             <Spacer height={Spacing.lg} />
 
-            {isLoadingDailyHabits ? (
+            {showLoader ? (
                 <ThemedLoader />
             ) : error ? (
                 <ThemedText style={styles.centerText}>{error}</ThemedText>
@@ -71,24 +82,25 @@ const Dashboard = () => {
                             onToggle={handleToggle}
                         />
                     )}
-                    ListFooterComponent={
-                        <View style={styles.statsRow}>
-                            <ThemedCard style={styles.statCard}>
-                                <ThemedText title={true} style={styles.statValue}>
-                                    {dailyScore}%
-                                </ThemedText>
-                                <ThemedText style={styles.statLabel}>Daily Score</ThemedText>
-                            </ThemedCard>
-
-                            <ThemedCard style={styles.statCard}>
-                                <ThemedText title={true} style={styles.statValue}>
-                                    {completedCount}/{totalCount}
-                                </ThemedText>
-                                <ThemedText style={styles.statLabel}>Progress</ThemedText>
-                            </ThemedCard>
-                        </View>
-                    }
                 />
+            )}
+
+            {dailyHabits.length > 0 && (
+                <View style={styles.statsRow}>
+                    <ThemedCard style={styles.statCard}>
+                        <ThemedText title={true} style={styles.statValue}>
+                            {dailyScore}%
+                        </ThemedText>
+                        <ThemedText style={styles.statLabel}>Daily Score</ThemedText>
+                    </ThemedCard>
+
+                    <ThemedCard style={styles.statCard}>
+                        <ThemedText title={true} style={styles.statValue}>
+                            {completedCount}/{totalCount}
+                        </ThemedText>
+                        <ThemedText style={styles.statLabel}>Progress</ThemedText>
+                    </ThemedCard>
+                </View>
             )}
         </ThemedView>
     )
@@ -100,24 +112,28 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         paddingHorizontal: Spacing.screenPaddingHorizontal,
-        paddingTop: Spacing.screenPaddingTop,
+        paddingTop: Spacing.xxl,
     },
     heading: {
         fontWeight: "bold",
-        fontSize: FontSize.xxl,
+        fontSize: FontSize.xl,
+        textAlign: "center",
         marginBottom: Spacing.xs,
     },
     list: {
-        paddingBottom: Spacing.xxl,
+        paddingBottom: 120,
     },
     centerText: {
         textAlign: "center",
         marginTop: Spacing.lg,
     },
     statsRow: {
+        position: "absolute",
+        bottom: Spacing.md,
+        left: Spacing.screenPaddingHorizontal,
+        right: Spacing.screenPaddingHorizontal,
         flexDirection: "row",
         gap: Spacing.md,
-        marginTop: Spacing.md,
     },
     statCard: {
         flex: 1,

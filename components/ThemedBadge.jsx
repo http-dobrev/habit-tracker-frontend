@@ -1,10 +1,11 @@
-import { StyleSheet, View, useColorScheme } from "react-native"
+import { StyleSheet, View } from "react-native"
 
 import { Colors } from "../constants/Colors"
 import ThemedText from "./ThemedText"
+import { useTheme } from "../contexts/ThemeContext"
 
 function ThemedBadge({ label, variant = "good", style }) {
-  const colorScheme = useColorScheme()
+  const { colorScheme } = useTheme()
   const theme = Colors[colorScheme] ?? Colors.light
 
   const isGood = variant === "good"
