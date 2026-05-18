@@ -1,6 +1,6 @@
 import ThemedText from "./ThemedText"
 
-const DateHeader = () => {
+function DateHeader({ style, ...props }) {
     const today = new Date()
 
     const formattedDate = today.toLocaleDateString("en-GB", {
@@ -10,7 +10,7 @@ const DateHeader = () => {
     })
 
     return (
-        <ThemedText title={true}>
+        <ThemedText title={true} style={style}>
             {formattedDate}
         </ThemedText>
     )

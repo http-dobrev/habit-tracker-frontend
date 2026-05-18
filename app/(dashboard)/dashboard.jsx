@@ -59,7 +59,7 @@ const Dashboard = () => {
         <ThemedView style={styles.container} safe={false}>
             <Spacer />
             <ThemedText title={true} style={styles.heading}>Today</ThemedText>
-            <DateHeader />
+            <DateHeader style={styles.dateHeader} />
 
             <Spacer height={Spacing.lg} />
 
@@ -119,6 +119,10 @@ const styles = StyleSheet.create({
         fontSize: FontSize.xl,
         textAlign: "center",
         marginBottom: Spacing.xs,
+    },
+    dateHeader: {
+        textAlign: "center",
+        opacity: 0.7,
     },
     list: {
         paddingBottom: 120,

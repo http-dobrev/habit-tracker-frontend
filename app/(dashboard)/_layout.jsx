@@ -67,6 +67,17 @@ const DashboardLayout = () => {
             tabBarStyle: { display: 'none' },
           }}
         />
+        <Tabs.Screen
+          name="change-password"
+          options={{
+            href: null,
+            tabBarStyle: { display: 'none' },
+          }}
+        />
+        <Tabs.Screen
+          name="ProfileStats"
+          options={{ href: null }}
+        />
       </Tabs>
     </UserOnly>
   )
