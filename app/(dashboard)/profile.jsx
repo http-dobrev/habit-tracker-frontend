@@ -12,7 +12,7 @@ import ThemedText from '../../components/ThemedText'
 import ThemedView from '../../components/ThemedView'
 import ThemedButton from '../../components/ThemedButton'
 import ThemedCard from '../../components/ThemedCard'
-import ProfileStats from './ProfileStats'
+import ProfileStats from './profile-stats'
 
 const Profile = () => {
     const { logout, user } = useUser()

@@ -29,6 +29,8 @@ const ProfileStats = () => {
         loadHabits()
         getHabitCompletionHistory(user.token)
             .then(history => {
+                console.log('history length:', history?.length)
+                console.log('history sample:', JSON.stringify(history?.[0]))
                 setStats({
                     currentStreak: getCurrentStreak(history),
                     bestStreak: getBestStreak(history),
@@ -37,7 +39,7 @@ const ProfileStats = () => {
                 })
                 setTopHabits(getPerHabitStats(history, habits).slice(0, 3))
             })
-            .catch(() => {})
+            .catch(e => console.error('history error:', e.message))
     }, [user?.token])
 
     useEffect(() => {

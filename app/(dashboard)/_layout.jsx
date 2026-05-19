@@ -75,7 +75,7 @@ const DashboardLayout = () => {
           }}
         />
         <Tabs.Screen
-          name="ProfileStats"
+          name="profile-stats"
           options={{ href: null }}
         />
       </Tabs>
