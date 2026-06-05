@@ -2,7 +2,7 @@ import { StyleSheet, View, Pressable, TouchableWithoutFeedback, Keyboard } from 
 import { useRouter, useLocalSearchParams } from 'expo-router'
 import { useState, useEffect } from 'react'
 import { Ionicons } from '@expo/vector-icons'
-import { useColorScheme } from 'react-native'
+import { useTheme } from '../../../contexts/ThemeContext'
 import { Spacing, FontSize, Radius } from '../../../constants/Spacing'
 
 import ThemedView from '../../../components/ThemedView'
@@ -17,7 +17,7 @@ import { useHabits } from "../../../hooks/useHabits";
 
 const Edit = () => {
   const router = useRouter()
-  const colorScheme = useColorScheme()
+  const { colorScheme } = useTheme()
   const { updateHabit } = useHabits()
   const { id, initialName, initialType } = useLocalSearchParams()
 

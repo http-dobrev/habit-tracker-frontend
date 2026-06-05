@@ -14,6 +14,8 @@ export function HabitProvider({ children }) {
 
     const [habits, setHabits] = useState([]);
     const [isLoadingHabits, setIsLoadingHabits] = useState(false);
+    const [isDeletingHabit, setIsDeletingHabit] = useState(false);
+    const [lastHabitChange, setLastHabitChange] = useState(0);
 
     useEffect(() => {
         if (!user?.token) {
@@ -28,6 +30,7 @@ export function HabitProvider({ children }) {
 
         const habit = await apiCreateHabit(habitData, user.token);
         setHabits((currentHabits) => [...currentHabits, habit]);
+        setLastHabitChange(Date.now());
         return habit;
     }, [user?.token]);
 
@@ -56,6 +59,7 @@ export function HabitProvider({ children }) {
 
         const habit = await apiUpdateHabit(id, habitData, user.token);
         setHabits(prev => prev.map(h => h.id == id ? habit : h));
+        setLastHabitChange(Date.now());
         return habit;
     }, [user?.token]);
 
@@ -64,11 +68,16 @@ export function HabitProvider({ children }) {
             throw new Error("You must be logged in to delete a habit.");
         }
 
-        await apiDeleteHabit(id, user.token);
-        
-        setHabits((currentHabits) =>
-            currentHabits.filter((habit) => String(habit.id) !== String(id))
-        );
+        setIsDeletingHabit(true);
+        try {
+            await apiDeleteHabit(id, user.token);
+            setHabits((currentHabits) =>
+                currentHabits.filter((habit) => String(habit.id) !== String(id))
+            );
+            setLastHabitChange(Date.now());
+        } finally {
+            setIsDeletingHabit(false);
+        }
     }, [user?.token]);
 
     return (
@@ -76,6 +85,8 @@ export function HabitProvider({ children }) {
             value={{
                 habits,
                 isLoadingHabits,
+                isDeletingHabit,
+                lastHabitChange,
                 createHabit,
                 loadHabits,
                 updateHabit,

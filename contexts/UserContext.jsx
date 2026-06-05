@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { register as apiRegister, login as apiLogin, getCurrentUser } from "../lib/api";
+import { register as apiRegister, login as apiLogin, getCurrentUser, verifyEmail as apiVerifyEmail, resendVerification as apiResendVerification, refreshAccessToken, logoutApi } from "../lib/api";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -8,6 +8,7 @@ export const UserContext = createContext(null);
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
     const [isInitialized, setIsInitialized] = useState(false);
+    const [pendingEmail, setPendingEmail] = useState(null);
 
     useEffect(() => {
         initializeAuth();
@@ -22,61 +23,71 @@ export function UserProvider({ children }) {
 
         await AsyncStorage.setItem("token", response.token);
         const currentUser = await getCurrentUser(response.token);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
 
         setUser({
             ...currentUser,
             token: response.token,
+            refreshToken: response.refreshToken
         });
-
-        return response;
     }
 
     async function register(name, email, password) {
-            const response = await apiRegister(name, email, password);
+        await apiRegister(name, email, password);
+        setPendingEmail(email);
+    }
 
-            if (!response || !response.token) {
-                throw new Error("Invalid email or password");
-            }
-            
-            await AsyncStorage.setItem("token", response.token);
-            const currentUser = await getCurrentUser(response.token);
+    async function verifyEmail(code) {
+        if (!pendingEmail) throw new Error("No pending email verification.");
+        const response = await apiVerifyEmail(pendingEmail, code);
 
-            setUser({
-                ...currentUser,
-                token: response.token,
-            });
-
-            return response;
+        if (!response || !response.token) {
+            throw new Error("Verification failed. Please try again.");
         }
+
+        await AsyncStorage.setItem("token", response.token);
+        await AsyncStorage.setItem('refreshToken', response.refreshToken);
+        const currentUser = await getCurrentUser(response.token);
+        setPendingEmail(null);
+        setUser({ ...currentUser, token: response.token, refreshToken: response.refreshToken });
+    }
+
+    async function resendVerification() {
+        if (!pendingEmail) throw new Error("No pending email verification.");
+        await apiResendVerification(pendingEmail);
+    }
 
     async function logout() {
-        await AsyncStorage.removeItem("token");
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        if (refreshToken) await logoutApi(refreshToken).catch(() => {});
+        await AsyncStorage.multiRemove(['token', 'refreshToken']);
         setUser(null);
-    }
+    };
     
-    async function initializeAuth() {
-        try {
-            const token = await AsyncStorage.getItem("token");
-            
-            if (token) {
-                const currentUser = await getCurrentUser(token);
+    async function initializeAuth(){
+        const token = await AsyncStorage.getItem('token');
+        const refreshToken = await AsyncStorage.getItem('refreshToken');
+        if (!token || !refreshToken) { setIsInitialized(true); return; }
 
-                setUser({
-                    ...currentUser,
-                    token,
-                });
+        try {
+            const userData = await getCurrentUser(token);
+            setUser({ ...userData, token, refreshToken });
+        } catch {
+            // Access token expired — try refresh
+            try {
+            const { token: newToken } = await refreshAccessToken(refreshToken);
+            await AsyncStorage.setItem('token', newToken);
+            const userData = await getCurrentUser(newToken);
+            setUser({ ...userData, token: newToken, refreshToken });
+            } catch {
+            await AsyncStorage.multiRemove(['token', 'refreshToken']);
             }
-        } catch (error) {
-            await AsyncStorage.removeItem("token");
-            setUser(null);
-            console.error("Error initializing authentication:", error);
-        } finally {
-            setIsInitialized(true);
         }
-    }
+        setIsInitialized(true);
+    };
 
     return (
-        <UserContext.Provider value={{ user, isInitialized, login, register, logout }}>
+        <UserContext.Provider value={{ user, isInitialized, pendingEmail, login, register, logout, verifyEmail, resendVerification }}>
             {children}
         </UserContext.Provider>
     )

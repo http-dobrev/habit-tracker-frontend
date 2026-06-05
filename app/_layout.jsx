@@ -1,34 +1,44 @@
 import { Stack } from 'expo-router'
-import { StyleSheet, Text, useColorScheme, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { Colors } from '../constants/Colors'
 import { StatusBar } from 'expo-status-bar'
 import { UserProvider } from '../contexts/UserContext'
 import { HabitProvider } from "../contexts/HabitContext";
 import { HabitCompletionProvider } from '../contexts/HabitCompletionContext'
+import { ThemeProvider, useTheme } from '../contexts/ThemeContext'
 
-const RootLayout = () => {
-  const colorScheme = useColorScheme()
+const RootLayoutInner = () => {
+  const { colorScheme } = useTheme()
   const theme = Colors[colorScheme] ?? Colors.light
 
-  return ( 
-    <UserProvider>
-      <HabitProvider> 
-        <HabitCompletionProvider>
-          <StatusBar value="style" />
-          <Stack screenOptions={{
-              headerStyle: { backgroundColor: theme.navBackground },
-              headerTintColor: theme.title,
-          }}> 
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+  return (
+    <>
+      <StatusBar value="style" />
+      <Stack screenOptions={{
+          headerStyle: { backgroundColor: theme.navBackground },
+          headerTintColor: theme.title,
+      }}>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ title: 'Home' }} />
+        <Stack.Screen name="about" options={{ title: 'About' }} />
+        <Stack.Screen name="contact" options={{ title: 'Contact' }} />
+      </Stack>
+    </>
+  )
+}
 
-            <Stack.Screen name="index" options={{ title: 'Home' }} />
-            <Stack.Screen name="about" options={{ title: 'About' }} />
-            <Stack.Screen name="contact" options={{ title: 'Contact' }} />
-          </Stack>
-        </HabitCompletionProvider>
-      </HabitProvider> 
-    </UserProvider>
+const RootLayout = () => {
+  return (
+    <ThemeProvider>
+      <UserProvider>
+        <HabitProvider>
+          <HabitCompletionProvider>
+            <RootLayoutInner />
+          </HabitCompletionProvider>
+        </HabitProvider>
+      </UserProvider>
+    </ThemeProvider>
   )
 }
 

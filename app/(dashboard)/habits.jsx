@@ -10,11 +10,17 @@ import ThemedView from "../../components/ThemedView"
 import ThemedLoader from "../../components/ThemedLoader";
 import ThemedHabitCard from "../../components/ThemedHabitCard"
 import ThemedButton from "../../components/ThemedButton"
+import ThemedSearchBar from "../../components/ThemedSearchBar"
+import ThemedFilterChips from "../../components/ThemedFilterChips"
+
+const FILTERS = ['All', 'Good', 'Bad']
 
 const Habits = () => {
-  const { habits, isLoadingHabits, loadHabits, deleteHabit } = useHabits();
+  const { habits, isLoadingHabits, isDeletingHabit, loadHabits, deleteHabit } = useHabits();
   const router = useRouter()
   const [error, setError] = useState(null)
+  const [search, setSearch] = useState('')
+  const [activeFilter, setActiveFilter] = useState('All')
 
   useEffect(() => {
     loadHabits().catch(() => {
@@ -25,8 +31,8 @@ const Habits = () => {
   const handleCreate = () => router.push("/create")
 
   const handleEdit = (habit) => {
-    router.push({ 
-      pathname: `/edit/${habit.id}`, 
+    router.push({
+      pathname: `/edit/${habit.id}`,
       params: {
         initialName: habit.name,
         initialType: habit.type,
@@ -54,24 +60,37 @@ const Habits = () => {
       ]
     )
   }
-  
+
+  const filteredHabits = habits.filter(h => {
+    const matchesSearch = h.name.toLowerCase().includes(search.toLowerCase())
+    const matchesFilter =
+      activeFilter === 'All' ||
+      h.type?.toLowerCase() === activeFilter.toLowerCase()
+    return matchesSearch && matchesFilter
+  })
+
   return (
     <ThemedView style={styles.container}>
       <Spacer />
       <ThemedText title={true} style={styles.heading}>
         Manage Habits
       </ThemedText>
-      <Spacer />
+      <Spacer height={Spacing.md} />
 
-      {isLoadingHabits ? (
+      <ThemedSearchBar value={search} onChangeText={setSearch} placeholder="Search habits..." />
+      <ThemedFilterChips options={FILTERS} active={activeFilter} onSelect={setActiveFilter} />
+
+      {isLoadingHabits || isDeletingHabit ? (
         <ThemedLoader />
       ) : error ? (
         <ThemedText style={styles.centerText}>{error}</ThemedText>
-      ) : habits.length === 0 ? (
-        <ThemedText style={styles.centerText}>No habits yet — tap + to add your first one</ThemedText>
-      ) : ( 
+      ) : filteredHabits.length === 0 ? (
+        <ThemedText style={styles.centerText}>
+          {habits.length === 0 ? 'No habits yet — tap + to add your first one' : 'No habits match your search'}
+        </ThemedText>
+      ) : (
         <FlatList
-          data={habits}
+          data={filteredHabits}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.list}
           renderItem={({ item }) => (

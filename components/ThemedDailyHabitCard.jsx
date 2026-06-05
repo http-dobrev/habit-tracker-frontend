@@ -1,12 +1,13 @@
-import { StyleSheet, View, Pressable, useColorScheme } from "react-native"
+import { StyleSheet, View, Pressable } from "react-native"
 import { Colors } from "../constants/Colors"
 import { Spacing, Radius, FontSize } from "../constants/Spacing"
 import ThemedText from "./ThemedText"
 import ThemedCard from "./ThemedCard"
 import ThemedBadge from "./ThemedBadge"
+import { useTheme } from "../contexts/ThemeContext"
 
 function ThemedDailyHabitCard({ habit, onToggle, style }) {
-    const colorScheme = useColorScheme()
+    const { colorScheme } = useTheme()
     const theme = Colors[colorScheme] ?? Colors.light
 
     const isBad = habit.habitType?.toUpperCase() === "BAD"
